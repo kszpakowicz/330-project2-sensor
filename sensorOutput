@@ -1,0 +1,17 @@
+import RPi.GPIO as GPIO
+import sensor
+import time
+import datetime
+
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BCM)
+GPIO.cleanup()
+
+instance = sensor.sensor(pin = 7)
+
+while True: 
+  result = instance.read()
+    if result.is_valid():
+      print("Last valid input: " +str(datetime.datetime.now()))
+      print("Temperature: " + result.temperature)
+      print("Humidity: " + result.humidity)
