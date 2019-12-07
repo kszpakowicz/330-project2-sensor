@@ -15,3 +15,8 @@ while True:
       print("Last valid input: " +str(datetime.datetime.now()))
       print("Temperature: " + result.temperature)
       print("Humidity: " + result.humidity)
+      if result.temperature > 72
+        print("Reduce temperature by: " + (result.temperature - 72) + " degrees."
+      elif result.temperature < 72
+        print("Increase temperature by: " + (72 - result.temperature) + " degrees."
+      
