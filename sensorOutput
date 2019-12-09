@@ -7,14 +7,18 @@ GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 GPIO.cleanup()
 
+#change to GPIO pin number being used
 instance = sensor.sensor(pin = 7)
 
+#constant output of current temperature and a recommended temperature change
 while True: 
   result = instance.read()
     if result.is_valid():
+      #is_valid ensures the input contains no errors
       print("Last valid input: " +str(datetime.datetime.now()))
       print("Temperature: " + result.temperature)
       print("Humidity: " + result.humidity)
+      #optimal room temperature when there are occupants in the room is 72 degrees
       if result.temperature > 72
         print("Reduce temperature by: " + (result.temperature - 72) + " degrees."
       elif result.temperature < 72
