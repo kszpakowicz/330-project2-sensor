@@ -11,24 +11,26 @@ class sensorResult:
     error_code = NO_ERROR
     temperature = -1
     humidity = 1
-
+    
+    #initializes error checks
     def init(self, error_code, temperature, humidity):
         self.error_code = error_code
         self.temperature = temperature
         self.humidity = humidity
-
+    #flag to check the data is being transmitted in a valid manner
     def is_valid(self):
         return self.error_code == sensorResult.NO_ERROR
 
 class sensor:
     'sensor class'
-
+    #pin instantiated, DO NOT CHANGE
     pin = 0
 
     def init(self, pin)
         self.pin = pin
 
     def read(self):
+        #instantiates GPIO
         RPi.GPIO.setup(self.pin, RPi.GPIO.OUT)
         
         self.send_and_sleep(RPi.GPIO.HIGH, 0.05)
@@ -53,7 +55,7 @@ class sensor:
         #calculate bytes
         _bytes = self.bits_to_bytes(bits)
 
-        #calculate checksum
+        #ensures checksum has no errors
         checksum = self.calculate_checksum(_bytes)
         if _bytes[4] != checksum:
             return sensorResult(sensorResult.CHECKSUM_ERROR, 0, 0)
@@ -68,7 +70,7 @@ class sensor:
 
         #if no errors
         return sensorResult(sensorResult.NO_ERROR, temperature, humidity)
-
+    #provides a way to isolate parts of the data being transmitted from the sensor
     def send_and_sleep(self, output, sleep):
         RPi.GPIO.output(self.pin, output)
         time.sleep(sleep)
@@ -92,7 +94,7 @@ class sensor:
                 if unchangedCount > maxUnchangedCount:
                     break
         return data
-
+    #analyzes the data being received from the sensor
     def parse_data_lengths(self, data):
         INIT_PULL_DOWN = 1
         INIT_PULL_UP = 2
@@ -144,7 +146,7 @@ class sensor:
                     continue
 
         return lengths
-        
+    #calculates bits based on data collected from the length array
     def calculate_bits(self, pull_length):
         shortest_pull = 1000
         longest_pull = 0
@@ -165,7 +167,7 @@ class sensor:
                 bit = True
             bits.append(bit)
         return bits
-
+    #converts bits to bytes
     def bits_to_bytes(self, bits):
         _bytes = []
         byte = 0
@@ -180,6 +182,6 @@ class sensor:
                 _bytes.append(byte)
                 byte = 0
         return _bytes
-
+     #calculates checksum
     def calculate_checksum(self, _bytes):
         return _bytes[0] + _bytes[1] + _bytes[2] + _bytes[3] & 255
